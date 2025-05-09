@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: laravel_appname
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+    # depends_on:
+    #   - db
+    networks:
+      - appname
+
+  nginx:
+    image: nginx
+    container_name: laravel_nginx
+    restart: unless-stopped
+    ports:
+      - "8111:80"
+    volumes:
+      - .:/var/www
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - appname
+
+  # db:
+  #   image: mysql:8
+  #   container_name: laravel_db
+  #   restart: unless-stopped
+  #   environment:
+  #     MYSQL_DATABASE: laravel_chartix
+  #     MYSQL_USER: laraveluser
+  #     MYSQL_PASSWORD: secret
+  #     MYSQL_ROOT_PASSWORD: root
+  #   ports:
+  #     - "3210:3306"
+  #   volumes:
+  #     - db_data:/var/lib/mysql
+  #   networks:
+  #     - charityweb
+
+  # phpmyadmin:
+  #   image: phpmyadmin/phpmyadmin
+  #   container_name: laravel_phpmyadmin
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - db
+  #   environment:
+  #     PMA_HOST: db
+  #     MYSQL_ROOT_PASSWORD: root
+  #   ports:
+  #     - "8910:80"
+  #   networks:
+  #     - charityweb
+
+networks:
+  charityweb:
+    driver: bridge #optional
+
+volumes:
+  db_data:

@@ -60,7 +60,7 @@ services:
   #     - charityweb
 
 networks:
-  charityweb:
+  appname:
     driver: bridge #optional
 
 volumes:
